@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linnemanlabs.com/schemas/tool-result.schema.json",
+  "title": "Tool Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tool_call_id",
+    "correlation_id",
+    "tool_name",
+    "status",
+    "started_at",
+    "completed_at",
+    "duration_ms",
+    "request",
+    "result"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tool_call_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tool_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+([._-][a-z0-9]+)*$"
+    },
+    "tool_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tool_kind": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Examples: observability, aws, wazuh, runbook, internal"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "error",
+        "timeout",
+        "cancelled",
+        "partial"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "request": {
+      "$ref": "#/$defs/request"
+    },
+    "result": {
+      "$ref": "#/$defs/result"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/error"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "default": []
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caller",
+        "arguments"
+      ],
+      "properties": {
+        "caller": {
+          "$ref": "#/$defs/actor"
+        },
+        "arguments": {
+          "type": "object",
+          "description": "Tool-specific input arguments."
+        },
+        "argument_summary": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional human-readable summary of the request."
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "data"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Normalized summary of what the tool returned."
+        },
+        "data": {
+          "type": "object",
+          "description": "Tool-specific structured output."
+        },
+        "data_truncated": {
+          "type": "boolean",
+          "default": false
+        },
+        "raw_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional reference to stored raw result if not embedded inline."
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "details": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "service",
+            "agent",
+            "user",
+            "system"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "Prefer SPIFFE ID for internal services when available."
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "success"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "error": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "error",
+              "timeout",
+              "cancelled"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/$defs/error"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linnemanlabs.com/schemas/execution-request.schema.json",
+  "title": "Execution Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "execution_request_id",
+    "proposal_id",
+    "incident_id",
+    "correlation_id",
+    "runbook_id",
+    "runbook_version",
+    "requested_at",
+    "requested_by",
+    "parameters",
+    "target_selector",
+    "approval_refs",
+    "integrity_refs",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "execution_request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "proposal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "incident_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "runbook_id": {
+      "type": "string"
+    },
+    "runbook_version": {
+      "type": "string"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requested_by": {
+      "$ref": "#/$defs/actor"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Final execution parameters for the runbook."
+    },
+    "target_selector": {
+      "type": "object",
+      "description": "Final target selection scope for execution."
+    },
+    "reason_summary": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Short human-readable reason this execution is being requested."
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "verification_checks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "approval_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "description": "References to approvals or review decisions required for execution."
+    },
+    "integrity_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "description": "References to integrity artifacts such as transparency log entry, timestamp proof, or signatures."
+    },
+    "policy_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "default": []
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Execution request should not be honored after this time."
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": false
+    },
+    "idempotency_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "requested",
+        "validated",
+        "rejected",
+        "expired",
+        "cancelled",
+        "started",
+        "completed",
+        "failed"
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "service",
+            "agent",
+            "reviewer",
+            "user",
+            "system"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "Prefer SPIFFE ID for internal services when available."
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

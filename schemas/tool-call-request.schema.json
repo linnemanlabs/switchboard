@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linnemanlabs.com/schemas/tool-call-request.schema.json",
+  "title": "Tool Call Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tool_call_id",
+    "correlation_id",
+    "tool_name",
+    "requested_at",
+    "caller",
+    "arguments"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "tool_call_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "tool_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+([._-][a-z0-9]+)*$"
+    },
+    "tool_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tool_kind": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Examples: observability, aws, wazuh, runbook, internal"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "caller": {
+      "$ref": "#/$defs/actor"
+    },
+    "arguments": {
+      "type": "object",
+      "description": "Tool-specific input arguments."
+    },
+    "argument_summary": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional human-readable summary of the request."
+    },
+    "timeout_ms": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "default": "normal"
+    },
+    "read_only": {
+      "type": "boolean",
+      "default": true,
+      "description": "True for investigative/data retrieval tools. False for tools that may change state."
+    },
+    "idempotency_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "service",
+            "agent",
+            "user",
+            "system"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "Prefer SPIFFE ID for internal services when available."
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

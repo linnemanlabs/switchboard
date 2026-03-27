@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linnemanlabs.com/schemas/review-decision.schema.json",
+  "title": "Review Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "review_decision_id",
+    "proposal_id",
+    "incident_id",
+    "correlation_id",
+    "reviewed_at",
+    "reviewer",
+    "reviewer_type",
+    "decision"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "review_decision_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "proposal_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "incident_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reviewer": {
+      "$ref": "#/$defs/actor"
+    },
+    "reviewer_type": {
+      "type": "string",
+      "enum": [
+        "rule_based",
+        "agent_based",
+        "human"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "rejected",
+        "needs_more_evidence",
+        "needs_narrower_scope",
+        "needs_parameter_change"
+      ]
+    },
+    "decision_summary": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Short human-readable explanation of the review outcome."
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Useful for agent-based review; may be null for rule-based or human review."
+    },
+    "approved_scope": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Optional narrowed scope approved by the reviewer."
+    },
+    "required_changes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "blocking_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "required_evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "default": []
+    },
+    "considered_evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "default": []
+    },
+    "policy_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "default": []
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Optional expiration for this decision."
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "service",
+            "agent",
+            "reviewer",
+            "user",
+            "system"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "Prefer SPIFFE ID for internal services when available."
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}
