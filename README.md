@@ -190,7 +190,11 @@ Switchboard is not intended to be:
 
 ## Why this exists
 
-Operating infrastructure well requires more than reacting to threshold breaches. Strong operators notice patterns, gather context, weigh risk, and act carefully. Switchboard is an attempt to build a better system around those realities using the new capabilities AI makes possible, without sacrificing trust, clarity, or control.
+I run a growing set of infrastructure and security systems as a one-person operator. Switchboard is being built to help me manage that environment more effectively without giving up trust, auditability, or control.
+
+The goal is not to hand operations over to a black box. The goal is to build a better system for investigating issues, gathering evidence, proposing bounded actions, supporting safe and well-reviewed operational workflows, detecting weak signals before they become incidents, and helping with routine maintenance as the environment grows.
+
+It is also being built because this is an interesting systems problem. Part of the goal is utility, and part of the goal is exploring what becomes possible when modern AI capabilities are applied carefully to real infrastructure operations.
 
 ## License
 
