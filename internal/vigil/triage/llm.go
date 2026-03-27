@@ -1,0 +1,78 @@
+package triage
+
+import (
+	"context"
+	"encoding/json"
+
+	"github.com/linnemanlabs/switchboard/internal/vigil/tools"
+)
+
+const (
+	// StopEnd indicates the LLM stopped because it finished its response.
+	StopEnd StopReason = "end_turn"
+
+	// StopToolUse indicates the LLM stopped because it wants to call a tool.
+	StopToolUse StopReason = "tool_use"
+
+	// StopMaxTokens indicates the LLM stopped because it reached the maximum token limit.
+	StopMaxTokens StopReason = "max_tokens"
+
+	// StopStopSequence indicates the LLM stopped because it reached a stop sequence in the response.
+	StopStopSequence StopReason = "stop_sequence"
+
+	// StopPauseTurn indicates the LLM stopped because it wants to pause and wait for more input.
+	StopPauseTurn StopReason = "pause_turn"
+
+	// StopRefusal indicates the LLM stopped because it refused to answer (e.g. due to content policy).
+	StopRefusal StopReason = "refusal"
+)
+
+// Provider is the interface for any LLM backend.
+type Provider interface {
+	Send(ctx context.Context, req *LLMRequest) (*LLMResponse, error)
+}
+
+// LLMRequest represents the input to the LLM provider, including the conversation history and available tools.
+type LLMRequest struct {
+	MaxTokens int
+	System    string
+	Messages  []Message
+	Tools     []tools.ToolDef
+}
+
+// LLMResponse represents the output from the LLM provider, including the generated content, stop reason, and token usage.
+type LLMResponse struct {
+	Content    []ContentBlock
+	StopReason StopReason
+	Usage      Usage
+	Model      string
+}
+
+// StopReason indicates why the LLM stopped generating content, such as reaching the end of the response or requesting a tool call.
+type StopReason string
+
+// Message represents a single message in the conversation, which can be from the user or the assistant, and can contain either text or tool calls.
+type Message struct {
+	Role    string         `json:"role"`
+	Content []ContentBlock `json:"content"`
+}
+
+// ContentBlock represents a block of content in the LLM response, which can be text, a tool call, or an error message.
+// It also includes metadata such as duration for tool calls.
+type ContentBlock struct {
+	Type      string          `json:"type"`
+	Text      string          `json:"text,omitempty"`
+	ID        string          `json:"id,omitempty"`
+	Name      string          `json:"name,omitempty"`
+	Input     json.RawMessage `json:"input,omitempty"`
+	ToolUseID string          `json:"tool_use_id,omitempty"`
+	Content   string          `json:"content,omitempty"`
+	IsError   bool            `json:"is_error,omitempty"`
+	Duration  float64         `json:"-"`
+}
+
+// Usage represents the token usage for an LLM call, including input and output tokens.
+type Usage struct {
+	InputTokens  int `json:"input_tokens"`
+	OutputTokens int `json:"output_tokens"`
+}
