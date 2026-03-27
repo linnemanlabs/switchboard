@@ -42,8 +42,9 @@ Write an ADR when a decision:
 
 ## Relationship to other docs
 
-- `docs/architecture/` explains how the system is intended to work
-- `docs/adr/` explains why specific important decisions were made
+- `docs/architecture/` explains the overall system design, trust model, lifecycle, and cross-cutting behavior
+- `docs/adr/` explains why specific important technical decisions were made
+- `docs/services/` contains service-level documentation such as Vigil’s scope, tool contracts, and conversation model
 - `schemas/` defines formal machine-readable contracts
 
 ## Current ADRs
@@ -55,6 +56,9 @@ Write an ADR when a decision:
 - `0005-v2-stops-at-runbook-proposal-and-does-not-execute.md`
 - `0006-observer-components-may-refer-but-not-execute.md`
 - `0007-review-includes-both-rule-based-and-agent-based-analysis.md`
+- `0008-runbooks-use-detection-hints-hard-constraints-and-verification-checks.md`
+- `0009-tool-boundary-is-standardized-around-mcp-style-concepts.md`
+- `0010-failure-modes-default-to-safe-degradation-and-blocked-execution.md`
 
 ## Notes
 

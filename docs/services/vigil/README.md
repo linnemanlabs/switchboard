@@ -37,8 +37,8 @@ Vigil is heavily instrumented:
 ## Architecture
 
 ```
-cmd/server/main.go          Entry point, wiring, HTTP stack, graceful shutdown
-internal/
+cmd/vigil/main.go          Entry point, wiring, HTTP stack, graceful shutdown
+internal/vigil/
   alertapi/                  HTTP handlers (chi router)
   authmw/                    Bearer token authentication middleware
   cfg/                       Configuration (flags, env vars, validation)
@@ -176,11 +176,3 @@ Vigil implements a graceful shutdown sequence:
 - **Pyroscope** - Profiling instrumentation
 - **Prometheus** - Metrics instrumentation
 - **47 golangci-lint rules** - Code review
-
-## Author
-
-Built by [Keith Linneman](https://linnemanlabs.com) at LinnemanLabs.
-
-## License
-
-MIT. Do what you want with it.

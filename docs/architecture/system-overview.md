@@ -38,6 +38,9 @@ Every meaningful step should be attributable and auditable:
 Reasoning may be broad and probabilistic.
 Execution must be narrow, deterministic, constrained, and easy to audit.
 
+### Safe degradation and fail-closed execution
+When dependencies fail, the system should degrade investigative capability carefully where safe, but block approval and execution when required controls are missing.
+
 ### Separation of duties
 Different responsibilities should be owned by different components:
 - investigate
@@ -52,6 +55,18 @@ Only the execution subsystem should perform changes.
 
 ### Strong service identity
 Internal service-to-service trust is based on SPIFFE/SPIRE identity using SVIDs rather than shared static secrets.
+
+## Failure Handling
+
+Switchboard is designed to prefer reduced capability over unsafe capability.
+
+As a general rule:
+- investigation and observation may degrade in bounded ways when non-critical dependencies fail
+- approval and execution must fail closed when required controls, reviews, or integrity artifacts are unavailable
+
+This means the system may continue operating with partial capability during investigative workflows, but it must not proceed with controlled action when required safety or trust requirements are not satisfied.
+
+The full failure-handling policy is defined in `docs/adr/0010-failure-modes-default-to-safe-degradation-and-blocked-execution.md`.
 
 ## Planned Components
 

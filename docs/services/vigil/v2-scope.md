@@ -103,11 +103,11 @@ This is a good first runbook because it is:
 ## Runbook Guidance Model
 
 V2 should distinguish between:
-- hints that make a runbook relevant
-- hard constraints that should block execution or review
-- verification checks that confirm success afterward
+- detection hints
+- hard constraints
+- verification checks
 
-This distinction should remain visible in both code and schema design.
+This distinction is defined more fully in `docs/adr/0008-runbooks-use-detection-hints-hard-constraints-and-verification-checks.md` and should remain visible in both code and schema design.
 
 ## Success Criteria
 

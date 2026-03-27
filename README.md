@@ -28,6 +28,7 @@ Switchboard is designed to:
 - **Separation of duties matters.** Investigation, review, execution, observation, and integrity recording are distinct responsibilities.
 - **Referrals before autonomy.** Observer-style components may refer issues upstream, but should not directly execute changes.
 - **Strong internal identity.** Internal service trust is based on SPIFFE/SPIRE workload identity with SVIDs.
+- **Degrade safely, execute conservatively.** Investigation may continue in bounded degraded modes; approval and execution fail closed when required controls are missing.
 
 ## Current direction
 

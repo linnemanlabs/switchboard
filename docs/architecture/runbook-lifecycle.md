@@ -124,7 +124,15 @@ Review, integrity recording, and execution are planned next stages.
 
 ## Guidance Model
 
-Runbooks should be designed using three distinct categories.
+Runbooks should be designed using three distinct categories:
+
+- detection hints
+- hard constraints
+- verification checks
+
+These categories are defined as a core design decision in `docs/adr/0008-runbooks-use-detection-hints-hard-constraints-and-verification-checks.md`.
+
+This model should remain consistent across future runbooks, reviewer logic, execution preconditions, and post-execution verification.
 
 ### Detection hints
 Signals that suggest a runbook may be relevant.

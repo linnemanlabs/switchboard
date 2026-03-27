@@ -16,12 +16,18 @@ It exists to answer questions such as:
 ## Design Goals
 
 The audit model should be:
-- append-only
+- append-only in behavior
 - structured
 - machine-readable
 - easy to correlate across services
 - easy to sign, hash, and timestamp later
 - usable both for debugging and for trust verification
+
+At the current stage, append-only behavior is enforced by the application and service logic rather than by immutable storage guarantees.
+
+In practice, this means the system should behave as an append-only audit system even when backed by stores such as PostgreSQL that do not, by themselves, provide strong append-only guarantees.
+
+A future design phase is expected to strengthen this with storage-level or transparency-backed integrity mechanisms, but that is not yet the current decision.
 
 ## Common Event Envelope
 
@@ -140,7 +146,11 @@ The event envelope reserves space for later integrity controls such as:
 - timestamp authority reference
 - transparency log reference
 
-Not every early event must use every integrity feature, but the envelope should make those additions natural.
+At present, these fields prepare the model for stronger integrity guarantees but do not imply that every storage backend already provides immutable or transparency-backed enforcement.
+
+In the current phase, append-only behavior and event integrity expectations are primarily enforced by application design and service behavior.
+
+Future work is expected to add stronger integrity guarantees through explicit transparency and append-only mechanisms, but those storage-level decisions are not yet finalized.
 
 ## Proposal vs Execution
 
